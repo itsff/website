@@ -1,6 +1,6 @@
 ---
 id: 26
-title: 'Microsoft's redemption'
+title: Microsoft's redemption
 date: 2010-11-16T23:27:00+00:00
 author: filip
 layout: post
