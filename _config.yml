@@ -1,1 +1,44 @@
-theme: jekyll-theme-tactile
+# Site settings
+title: Filip Frącz
+description: personal website
+url: 'http://itsff.github.io/website'
+baseurl: ''
+# google_analytics: 'UA-XXXXXX-X'
+# disqus_shortname: 'your-disqus-name'
+
+author:
+  name: 'Filip Frącz'
+  email: filip@fracz.net
+  twitter_username: itsff
+  facebook_username: filipf
+  github_username:  itsff
+  linkedin_username:  filipfracz
+  flickr_username: itsff
+
+defaults:
+  -
+    scope:
+      path: ''
+      type: 'posts'
+    values:
+        layout: 'post'
+
+# Build settings
+destination: _site
+paginate: 10
+permalink: /:year/:title/
+markdown: kramdown
+highlighter: rouge
+
+sass:
+    sass_dir: _sass
+    style: compressed
+
+kramdown:
+  # use Github Flavored Markdown
+  input: GFM
+  # do not replace newlines by <br>s
+  hard_wrap: false
+
+plugins: ['jekyll-paginate']
+exclude: ['README.md', 'Gemfile', 'Gemfile.lock']
