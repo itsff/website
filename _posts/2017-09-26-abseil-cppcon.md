@@ -5,7 +5,7 @@ date: 2017-09-26T19:48:17+00:00
 author: filip
 layout: post
 guid: https://filipfracz.net/?p=648
-permalink: /2017/09/the-origin-of-the-name-abseil-the-internal-proj-name-was-abcl-but-it-was-trademarked-so-the-team-just-adapted-phonetic-equivalent-cppcon/
+permalink: /2017/09/abseil-cppcon/
 categories:
   - Personal
   - Twitter
