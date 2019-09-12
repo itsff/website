@@ -46,9 +46,9 @@ During the first few weeks of usage, I found myself constantly glancing down and
 <video controls width="500" height="281" poster="https://live.staticflickr.com/31337/48644530408_61926d4b53.jpg" src="https://www.flickr.com/photos/itsff/48644530408/play/site/61926d4b53/">
 </video>
 
-## Hot Dox
+## Hot Dox 🌭
 
-It's nice to have a cool keyboard at the office, but what about those times when I work from home? Sounds like a perfect excuse to purchase another mech!
+It's nice to have a cool keyboard at the office, but what about those times when I work from home? Sounds like a perfect excuse to purchase yet another mech!
 This time around I went with `ErgoDox "Hot Dox"` by [Alpaca keyboards](https://www.alpacakeyboards.com/). No backlight, no tilting, but still hot-swappable switches and _way_ cheaper!
 
 <a data-flickr-embed="true"  href="https://www.flickr.com/photos/itsff/46909773174/in/album-72157710695337826/" title="20190414_232525"><img src="https://live.staticflickr.com/65535/46909773174_8c3874e514_z.jpg" width="640" height="362" alt="20190414_232525"></a>
