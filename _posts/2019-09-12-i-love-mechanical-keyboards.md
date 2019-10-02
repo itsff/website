@@ -1,11 +1,11 @@
 ---
 id: 777
 title: I ❤ Mechanical Keyboards!
-date: 2019-10-12T00:28:18-05:00
+date: 2019-09-12T00:28:18-05:00
 author: filip
 layout: post
 guid: https://filipfracz.net/?p=777
-permalink: /2019/10/mech
+permalink: /2019/09/mech
 categories:
   - Personal
 ---
