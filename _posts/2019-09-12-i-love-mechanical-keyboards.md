@@ -9,7 +9,7 @@ permalink: /2019/09/mech
 categories:
   - Personal
 ---
-One of the great things about working at a start-up is meeting passionate people. [Seed CX](http://www.seedcx.com) is no exception, as there are so many colorful personalities here. My jaw dropped to the floor when [Kevin Wojkovich](https://www.linkedin.com/in/kwojo314) brought his Atreus keyboard to the office. I mean I myself was sporting a [Goldtouch Go!2](https://shop.goldtouch.com/products/goldtouch-go2-wired-mobile-keyboard-pc-mac), but Kevin's beauty was simply on another level. I asked him about it, and little did I know that this would be a beginning of a very fun, but expensive hobby for me.
+One of the great things about working at a start-up is meeting passionate people. My gig is no exception, as there are so many colorful personalities here. My jaw dropped to the floor when [Kevin Wojkovich](https://www.linkedin.com/in/kwojo314) brought his Atreus keyboard to the office. I mean I myself was sporting a [Goldtouch Go!2](https://shop.goldtouch.com/products/goldtouch-go2-wired-mobile-keyboard-pc-mac), but Kevin's beauty was simply on another level. I asked him about it, and little did I know that this would be a beginning of a very fun, but expensive hobby for me.
 
 <a data-flickr-embed="true"  href="https://www.flickr.com/photos/itsff/43228853275/in/album-72157710695337826/" title="Kevin Wojkovich&#x27;s Atreus keyboard"><img src="https://live.staticflickr.com/65535/43228853275_7745e595d5_z.jpg" width="640" height="360" alt="Kevin Wojkovich&#x27;s Atreus keyboard"></a>
 
