@@ -35,6 +35,8 @@
 
 * { box-sizing: border-box; }
 
+.nowrap { white-space: nowrap; }
+
 html { scroll-behavior: smooth; }
 
 body {
