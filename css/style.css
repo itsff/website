@@ -5,6 +5,7 @@
    ========================================================================= */
 
 :root {
+  color-scheme: dark;  /* renders native controls (audio player, scrollbars) dark */
   --bg:        #121316;
   --bg-2:      #17181c;
   --panel:     #1d1f24;
@@ -425,6 +426,7 @@ img { max-width: 100%; display: block; }
    preference), so there's no flash. The toggle button flips + persists it.
    ------------------------------------------------------------------------- */
 :root[data-theme="light"] {
+  color-scheme: light;
   --bg:        #eef0f3;
   --bg-2:      #e7e9ee;
   --panel:     #ffffff;
