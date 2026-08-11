@@ -16,6 +16,11 @@
     apply(root.dataset.theme === "light" ? "dark" : "light");
   });
 
+  // Keep the copyright year current without any manual edits.
+  var year = String(new Date().getFullYear());
+  var yearEls = document.querySelectorAll(".year");
+  for (var i = 0; i < yearEls.length; i++) yearEls[i].textContent = year;
+
   // If the user hasn't made an explicit choice, keep following the OS setting.
   try {
     window.matchMedia("(prefers-color-scheme: light)").addEventListener("change", function (ev) {
