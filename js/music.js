@@ -13,6 +13,14 @@
       .replace(/"/g, "&quot;");
   }
 
+  // Stable anchor id for a song — reuse the mp3 filename (matches the sync
+  // script's slug), else slugify the title.
+  function slugOf(song) {
+    if (song.audio) return song.audio.split("/").pop().replace(/\.[a-z0-9]+$/i, "");
+    return (song.title || "track").toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "") || "track";
+  }
+
   if (typeof SONGS === "undefined" || !SONGS.length) {
     list.innerHTML = '<div class="empty">No songs published yet — check back soon.</div>';
     return;
@@ -23,6 +31,7 @@
     '<circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/><path d="M9 18V5l12-2v13"/></svg>';
 
   list.innerHTML = SONGS.map(function (song) {
+    var slug = slugOf(song);
     var cover = song.cover
       ? '<img class="song__cover" src="' + esc(song.cover) + '" alt="' + esc(song.title) + ' cover">'
       : '<div class="song__cover placeholder" aria-hidden="true">' + noteSVG + "</div>";
@@ -59,11 +68,13 @@
       : "";
 
     return (
-      '<article class="song">' +
+      '<article class="song" id="' + esc(slug) + '">' +
         '<div class="song__head">' +
           cover +
           '<div class="song__meta">' +
-            '<h2 class="song__title">' + esc(song.title) + "</h2>" +
+            '<h2 class="song__title">' + esc(song.title) +
+              '<a class="song__permalink" href="#' + esc(slug) + '" aria-label="Link to this song" title="Link to this song">#</a>' +
+            "</h2>" +
             date +
             blurb +
             credit +
@@ -75,4 +86,26 @@
       "</article>"
     );
   }).join("");
+
+  // Songs render after the browser's initial jump-to-hash, so handle deep links
+  // ourselves: scroll the linked song into view, highlight it, and (on the first
+  // direct load) try to autoplay. Autoplay may be blocked by the browser unless
+  // the user has interacted with the page/site — that's expected, so we ignore it.
+  function focusHash(autoplay) {
+    var id = location.hash ? decodeURIComponent(location.hash.slice(1)) : "";
+    if (!id) return;
+    var el = document.getElementById(id);
+    if (!el || el.parentNode !== list) return;
+    var prev = list.querySelector(".song--target");
+    if (prev && prev !== el) prev.classList.remove("song--target");
+    el.classList.add("song--target");
+    el.scrollIntoView({ block: "start" });
+    if (autoplay) {
+      var a = el.querySelector("audio");
+      if (a) { var p = a.play(); if (p && p.catch) p.catch(function () {}); }
+    }
+  }
+
+  focusHash(true);
+  window.addEventListener("hashchange", function () { focusHash(false); });
 })();
