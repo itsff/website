@@ -54,7 +54,7 @@
 
   <main class="hero">
     <section class="card">
-      <img class="avatar" src="/images/profile.jpg" alt="Filip Frącz">
+      <img class="avatar" id="avatar" src="/images/profile.jpg" alt="Filip Frącz" role="button" tabindex="0" title="View photo" aria-label="Enlarge profile photo">
       <h1 class="name">Filip Frącz</h1>
       <p class="tagline">Wall Street keyboard warrior by day, <span class="nowrap">C++</span> masochist by choice, AI-assisted songwriter by night — on a mechanical keyboard for all three.</p>
       <p class="kbd-hint">— pick a key —</p>
@@ -107,6 +107,24 @@
       </p>
     </section>
   </main>
+
+  <div class="lightbox" id="lightbox" aria-hidden="true">
+    <img class="lightbox__img" src="/images/profile.jpg" alt="Filip Frącz">
+  </div>
+
+  <script>
+    (function () {
+      var avatar = document.getElementById("avatar");
+      var box = document.getElementById("lightbox");
+      if (!avatar || !box) return;
+      function onKey(e) { if (e.key === "Escape") close(); }
+      function open() { box.classList.add("open"); box.setAttribute("aria-hidden", "false"); document.addEventListener("keydown", onKey); }
+      function close() { box.classList.remove("open"); box.setAttribute("aria-hidden", "true"); document.removeEventListener("keydown", onKey); }
+      avatar.addEventListener("click", open);
+      avatar.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); open(); } });
+      box.addEventListener("click", close);
+    })();
+  </script>
   <script src="/js/theme.js"></script>
 </body>
 </html>
