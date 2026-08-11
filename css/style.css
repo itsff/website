@@ -415,3 +415,79 @@ img { max-width: 100%; display: block; }
   html { scroll-behavior: auto; }
   * { transition: none !important; }
 }
+
+/* -------------------------------------------------------------------------
+   Light theme
+   Dark is the default (:root above). A tiny inline script sets
+   <html data-theme="light|dark"> before paint (from saved choice or the OS
+   preference), so there's no flash. The toggle button flips + persists it.
+   ------------------------------------------------------------------------- */
+:root[data-theme="light"] {
+  --bg:        #eef0f3;
+  --bg-2:      #e7e9ee;
+  --panel:     #ffffff;
+  --panel-2:   #f1f3f6;
+  --ink:       #1b1d21;
+  --ink-dim:   #4a505a;
+  --ink-faint: #7c828d;
+  --line:      #e0e3e9;
+
+  /* light PBT-style keycaps */
+  --cap-top:    #ffffff;
+  --cap-bottom: #e9ebf0;
+  --cap-side:   #c3c8d1;
+  --cap-edge:   #ffffff;
+
+  /* accents deepened a touch for contrast on light */
+  --a-linkedin: #0a66c2;
+  --a-github:   #24292f;
+  --a-suno:     #e8590c;
+  --a-projects: #0f9d8c;
+  --a-music:    #7c4dff;
+  --a-email:    #c99700;
+}
+
+/* Homepage keeps the keyboard photo; the card goes light. */
+[data-theme="light"] .card {
+  background: rgba(255, 255, 255, .84);
+  border-color: rgba(0, 0, 0, .06);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, .32);
+}
+[data-theme="light"] .avatar {
+  border-color: rgba(0, 0, 0, .08);
+  box-shadow: 0 8px 26px rgba(0, 0, 0, .22), 0 0 0 6px rgba(124, 77, 255, .12);
+}
+[data-theme="light"] .topbar { background: rgba(255, 255, 255, .85); }
+
+/* -------------------------------------------------------------------------
+   Theme toggle button
+   ------------------------------------------------------------------------- */
+.topbar-right { display: flex; align-items: center; gap: 18px; }
+
+.theme-toggle {
+  display: inline-grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  color: var(--ink-dim);
+  cursor: pointer;
+  transition: color .2s ease, border-color .2s ease, background .2s ease;
+}
+.theme-toggle:hover { color: var(--ink); border-color: var(--ink-faint); }
+.theme-toggle svg { width: 18px; height: 18px; display: block; }
+.theme-toggle.fixed {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 30;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, .35);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+}
+.theme-toggle .icon-moon { display: none; }        /* dark mode shows the sun */
+[data-theme="light"] .theme-toggle .icon-sun  { display: none; }
+[data-theme="light"] .theme-toggle .icon-moon { display: block; }  /* light shows the moon */
