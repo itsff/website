@@ -292,12 +292,19 @@ img { max-width: 100%; display: block; }
   border-bottom: 1px solid var(--line);
 }
 .topbar .brand {
-  font-family: var(--mono);
-  font-weight: 700;
-  color: var(--ink);
-  letter-spacing: .3px;
+  display: inline-flex;
+  align-items: center;
 }
-.topbar .brand:hover { text-decoration: none; color: var(--a-music); }
+.topbar .brand:hover { text-decoration: none; }
+.brand-mark {
+  height: 32px;
+  width: auto;
+  display: block;
+  transition: transform .15s ease;
+}
+.topbar .brand:hover .brand-mark { transform: scale(1.06); }
+/* keep the dark-green mark crisp on the dark topbar */
+[data-theme="dark"] .brand-mark { filter: drop-shadow(0 0 1.5px rgba(255, 255, 255, .55)); }
 .topbar nav { display: flex; gap: 20px; font-family: var(--mono); font-size: .9rem; }
 .topbar nav a { color: var(--ink-dim); }
 .topbar nav a:hover { color: var(--ink); text-decoration: none; }
