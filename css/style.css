@@ -231,6 +231,8 @@ img { max-width: 100%; display: block; }
 }
 .hero-foot a { color: var(--ink-dim); }
 
+.copyright { display: block; margin-top: 6px; color: var(--ink-faint); }
+
 /* -------------------------------------------------------------------------
    Subpage shell (projects, music)
    ------------------------------------------------------------------------- */
