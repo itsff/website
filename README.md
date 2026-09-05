@@ -38,6 +38,12 @@ To sync a **different** playlist instead, pass its URL:
 `js/songs.js`. Blurbs are **preserved** every time you re-sync, so they won't be
 overwritten. (Requires Python 3 — standard library only, no install.)
 
+**Agents:** before running a sync, read `.claude/skills/refresh-music/SKILL.md`.
+Suno's playlist page is Cloudflare-protected (plain `curl`/`urllib` gets nothing),
+and its CDN sometimes serves corrupted audio that passes HTTP-level checks but
+won't actually play — the skill documents the workarounds and how to verify a
+downloaded track before committing it.
+
 ## Common edits
 
 **Add a project** — copy an `<article class="project">` block in `projects.html`.
