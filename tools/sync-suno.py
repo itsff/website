@@ -141,7 +141,9 @@ def fetch_playlist(pid):
         songs.append({
             "title": (c.get("title") or "Untitled").strip(),
             "id": c.get("id"),
-            "audio_url": c.get("audio_url"),
+            # audio_url on the clip is sometimes a dead "/api/forbidden" placeholder;
+            # media_urls[].url (CloudFront-hosted m4a) is the reliable download link.
+            "audio_url": (c.get("media_urls") or [{}])[0].get("url") or c.get("audio_url"),
             "image_url": c.get("image_large_url") or c.get("image_url"),
             "created_at": c.get("created_at"),
             "lyrics": resolve(md.get("prompt"), rows).strip(),
