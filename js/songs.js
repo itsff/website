@@ -226,7 +226,7 @@ const SONGS = [
     "credit": [
       {
         "label": "Original: Zejman & Garkumpel — „Samantha”",
-        "url": "https://youtu.be/gzGX2jTzCiI?is=lvvUgS5pXGXX6R9n"
+        "url": "https://www.youtube.com/watch?v=xZFs78mKILU&list=RDxZFs78mKILU"
       }
     ],
     "description": "A gentle shanty for Samantha - no famous clipper, no ocean glory, just an old gaff-rigged boat on the lakes and the man who loves her. Freely adapted from the Polish shanty \"Samantha\" by Mirosław \"Koval\" Kowalewski (Zejman & Garkumpel), rewritten in English so more sailors can sing along.",
@@ -243,7 +243,7 @@ const SONGS = [
     "credit": [
       {
         "label": "Original: Zejman & Garkumpel — „Samantha”",
-        "url": "https://youtu.be/gzGX2jTzCiI?is=lvvUgS5pXGXX6R9n"
+        "url": "https://www.youtube.com/watch?v=xZFs78mKILU&list=RDxZFs78mKILU"
       }
     ],
     "description": "Eine ruhige Shanty für Samantha - kein berühmter Klipper, kein Ruhm auf hoher See, nur ein altes Gaffelboot auf den Seen und der Mann, der sie liebt. Freie deutsche Fassung der polnischen Shanty „Samantha\" von Mirosław „Koval\" Kowalewski (Zejman & Garkumpel), damit noch mehr Segler mitsingen können.",
@@ -260,7 +260,7 @@ const SONGS = [
     "credit": [
       {
         "label": "Original: Zejman & Garkumpel — „Samantha”",
-        "url": "https://youtu.be/gzGX2jTzCiI?is=lvvUgS5pXGXX6R9n"
+        "url": "https://www.youtube.com/watch?v=xZFs78mKILU&list=RDxZFs78mKILU"
       }
     ],
     "description": "Een rustige shanty voor Samantha - geen beroemde klipper, geen roem op zee, alleen een oude gaffelboot op de meren en de man die van haar houdt. Vrije Nederlandse bewerking van de Poolse shanty \"Samantha\" van Mirosław \"Koval\" Kowalewski (Zejman & Garkumpel), zodat meer zeilers kunnen meezingen.",
