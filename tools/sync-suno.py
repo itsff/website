@@ -4,10 +4,11 @@ Sync songs from a Suno playlist into this website.
 
 What it does:
   * Reads a public Suno playlist (default: your "Best Of").
-  * Downloads each track's mp3   -> music/audio/<slug>.mp3
-    and its cover art           -> images/song-covers/<slug>.jpg
-    Files that already exist are SKIPPED (safe to run repeatedly).
-  * Regenerates js/songs.js from the playlist, in playlist order,
+  * Downloads each track's cover art -> images/song-covers/<slug>.jpg
+    (existing files are SKIPPED, so it is safe to run repeatedly).
+  * mp3s are NOT downloadable from Suno any more: add them by hand to
+    music/audio/<slug>.mp3 (the song shows without a player until you do).
+  * Regenerates js/songs.js from the playlist, NEWEST FIRST,
     while PRESERVING any `blurb` (your write-up) you've added to a song.
 
 Usage:
@@ -60,96 +61,38 @@ def get(url):
         return r.read()
 
 
-def parse_rows(payload):
-    """Parse the React-Flight stream into {row_id: raw_value}.
-
-    Rows are either length-delimited text — `id:T<hexlen>,<bytes>` — or a
-    newline-terminated JSON value — `id:<json>`. Long strings (like lyrics) live
-    in their own text row and are referenced elsewhere as "$<id>".
-    """
-    b = payload.encode("utf-8")
-    rows, i, n = {}, 0, len(b)
-    while i < n:
-        j = b.find(b":", i)
-        if j == -1:
-            break
-        rid = b[i:j].decode("latin1")
-        if not re.fullmatch(r"[0-9a-f]+", rid or ""):   # not a row header; resync
-            nl = b.find(b"\n", i)
-            if nl == -1:
-                break
-            i = nl + 1
-            continue
-        k = j + 1
-        if b[k:k + 1] == b"T":                           # length-delimited text row
-            c = b.find(b",", k)
-            length = int(b[k + 1:c], 16)
-            s = c + 1
-            rows[rid] = b[s:s + length].decode("utf-8", "replace")
-            i = s + length
-            if b[i:i + 1] == b"\n":
-                i += 1
-        else:                                            # JSON row, newline terminated
-            e = b.find(b"\n", k)
-            if e == -1:
-                e = n
-            rows[rid] = b[k:e].decode("utf-8", "replace")
-            i = e + 1
-    return rows
-
-
-def resolve(value, rows):
-    """Resolve a "$<id>" reference to its row text; pass plain strings through."""
-    if isinstance(value, str) and value.startswith("$"):
-        return rows.get(value[1:], "")
-    return value or ""
-
-
 def fetch_playlist(pid):
-    """Return (playlist_name, [song dicts]) parsed from the playlist page's RSC payload."""
-    html = get(f"https://suno.com/playlist/{pid}").decode("utf-8", "replace")
+    """Return (playlist_name, [song dicts]) from Suno's public playlist JSON API.
 
-    # The page is a Next.js app; song data streams as self.__next_f.push([1,"...json..."]).
-    # Reassemble every chunk (JSON-decoding each so escapes resolve), then brace-match
-    # the playlist object out of the concatenated payload.
-    chunks = re.findall(r'self\.__next_f\.push\(\[1,("(?:[^"\\]|\\.)*")\]\)', html)
-    payload = "".join(json.loads(c) for c in chunks)
-    rows = parse_rows(payload)
-
-    start = payload.find('"playlist":{"entity_type":"playlist_schema"')
-    if start == -1:
-        raise SystemExit("Could not find playlist data on the page. Is the playlist public?")
-    start = payload.index("{", start)
-    depth = 0
-    for j in range(start, len(payload)):
-        ch = payload[j]
-        if ch == "{":
-            depth += 1
-        elif ch == "}":
-            depth -= 1
-            if depth == 0:
-                end = j + 1
-                break
-    obj = json.loads(payload[start:end])
-
-    songs = []
-    for pc in obj.get("playlist_clips", []):
-        c = pc.get("clip") or {}
-        md = c.get("metadata") or {}
-        if not c.get("audio_url"):
-            continue
-        songs.append({
-            "title": (c.get("title") or "Untitled").strip(),
-            "id": c.get("id"),
-            # audio_url on the clip is sometimes a dead "/api/forbidden" placeholder;
-            # media_urls[].url (CloudFront-hosted m4a) is the reliable download link.
-            "audio_url": (c.get("media_urls") or [{}])[0].get("url") or c.get("audio_url"),
-            "image_url": c.get("image_large_url") or c.get("image_url"),
-            "created_at": c.get("created_at"),
-            "lyrics": resolve(md.get("prompt"), rows).strip(),
-            "description": resolve(c.get("caption"), rows).strip(),
-        })
-    return obj.get("name", "playlist"), songs
+    (The playlist HTML page no longer embeds the data, so we use the API the
+    web app itself calls. It needs no login for public playlists.)
+    """
+    name, songs, page, total = "playlist", [], 1, None
+    while True:
+        raw = get(f"https://studio-api.prod.suno.com/api/playlist/{pid}/?page={page}")
+        obj = json.loads(raw)
+        name = obj.get("name", name)
+        total = obj.get("num_total_results", total)
+        clips = obj.get("playlist_clips") or []
+        if not clips:
+            break
+        for pc in clips:
+            c = pc.get("clip") or {}
+            md = c.get("metadata") or {}
+            if not c.get("id"):
+                continue
+            songs.append({
+                "title": (c.get("title") or "Untitled").strip(),
+                "id": c.get("id"),
+                "image_url": c.get("image_large_url") or c.get("image_url"),
+                "created_at": c.get("created_at"),
+                "lyrics": (md.get("prompt") or "").strip(),
+                "description": (c.get("caption") or "").strip(),
+            })
+        if total is None or len(songs) >= total:
+            break
+        page += 1
+    return name, songs
 
 
 def download(url, dest):
@@ -199,12 +142,6 @@ def existing_manual(existing):
             for s in existing if s.get("id")}
 
 
-def existing_audio_owner(existing):
-    """{audio_path: song_id} — lets us detect when a song was replaced under the
-    same title (same filename, different id) so we can refresh its stale files."""
-    return {s["audio"]: s["id"] for s in existing if s.get("audio") and s.get("id")}
-
-
 def month_year(iso):
     if not iso:
         return ""
@@ -245,40 +182,38 @@ def main():
 
     existing = load_existing()
     manual = existing_manual(existing)
-    audio_owner = existing_audio_owner(existing)
-    out, n_new, n_skip, n_refresh = [], 0, 0, 0
+    by_id = {e["id"]: e for e in existing if e.get("id")}
+    out, n_new_cover, n_no_audio = [], 0, 0
+
+    # Newest first (by Suno creation time).
+    songs.sort(key=lambda x: x.get("created_at") or "", reverse=True)
 
     for s in songs:
+        old = by_id.get(s["id"], {})
         slug = slugify(s["title"])
-        audio_rel = f"music/audio/{slug}.mp3"
-        cover_rel = f"images/song-covers/{slug}.jpg"
+        # Keep the paths the site already uses (stable deep links / filenames).
+        audio_rel = old.get("audio") or f"music/audio/{slug}.mp3"
+        cover_rel = old.get("cover") or f"images/song-covers/{slug}.jpg"
 
-        # If this filename was previously a DIFFERENT song id, the track was
-        # replaced (e.g. re-generated with new lyrics) under the same title.
-        # Delete the stale mp3/cover so they get re-downloaded fresh.
-        replaced = audio_owner.get(audio_rel) not in (None, s["id"])
-        if replaced:
-            n_refresh += 1
-            for rel in (audio_rel, cover_rel):
-                fp = os.path.join(ROOT, rel)
-                if os.path.exists(fp):
-                    os.remove(fp)
-
-        a = download(s["audio_url"], os.path.join(ROOT, audio_rel))
+        # Covers are public on Suno's CDN. Audio is NOT downloadable (Suno's
+        # mp3 CDN returns 403 and the m4a is encrypted), so mp3s must be added
+        # by hand: drop <slug>.mp3 into music/audio/ and re-run.
         i = download(s["image_url"], os.path.join(ROOT, cover_rel))
-        n_new += (a == "ok")
-        n_skip += (a == "skip")
-        flag = ("· refreshed" if replaced and a == "ok"
-                else "· new" if a == "ok"
-                else "· have" if a == "skip" else "· ERR")
-        print(f"  {s['title'][:46]:<46} {flag}")
+        n_new_cover += (i == "ok")
+        have_audio = os.path.exists(os.path.join(ROOT, audio_rel)) and \
+            os.path.getsize(os.path.join(ROOT, audio_rel)) > 0
+        if not have_audio:
+            n_no_audio += 1
+        flag = "· mp3 ok" if have_audio else f"· NO MP3 (add {audio_rel})"
+        print(f"  {s['created_at'][:10]}  {s['title'][:46]:<46} {flag}")
 
         kept = manual.get(s["id"], {})
         entry = {
             "title": s["title"],
             "date": month_year(s["created_at"]),
+            "created": s["created_at"],
             "cover": cover_rel if i in ("ok", "skip") else "",
-            "audio": audio_rel if a in ("ok", "skip") else "",
+            "audio": audio_rel if have_audio else "",
             "suno": f"https://suno.com/song/{s['id']}" if s["id"] else "",
             # blurb = your own write-up (manual, preserved). If empty, the music
             # page falls back to `description` (the song's Suno caption, below).
@@ -292,9 +227,7 @@ def main():
         out.append(entry)
 
     write_songs_js(out)
-    summary = f"\nDone. {n_new} new download(s), {n_skip} already present"
-    summary += f", {n_refresh} refreshed (replaced)." if n_refresh else "."
-    print(summary)
+    print(f"\nDone. {n_new_cover} new cover(s); {n_no_audio} song(s) without an mp3.")
     print(f"Wrote {SONGS_JS} ({len(out)} songs).")
 
 
