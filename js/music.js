@@ -91,8 +91,17 @@
   // ourselves: scroll the linked song into view, highlight it, and (on the first
   // direct load) try to autoplay. Autoplay may be blocked by the browser unless
   // the user has interacted with the page/site — that's expected, so we ignore it.
+  // Old anchors that were renamed -> current anchor, so shared links keep working.
+  var ALIASES = {
+    "nobody-knows-the-same-c-plus-plus-c-plus-plus": "nobody-knows-the-same-c-plus-plus"
+  };
+
   function focusHash(autoplay) {
     var id = location.hash ? decodeURIComponent(location.hash.slice(1)) : "";
+    if (ALIASES[id]) {
+      id = ALIASES[id];
+      history.replaceState(null, "", "#" + id);
+    }
     if (!id) return;
     var el = document.getElementById(id);
     if (!el || el.parentNode !== list) return;
