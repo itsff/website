@@ -18,6 +18,7 @@ Usage:
 Requirements: Python 3 (standard library only). No build step, no pip.
 """
 
+import hashlib
 import json
 import os
 import re
@@ -167,8 +168,21 @@ def write_songs_js(songs):
         "   ========================================================================== */\n\n"
     )
     body = json.dumps(songs, indent=2, ensure_ascii=False)
+    text = header + "const SONGS = " + body + ";\n"
     with open(SONGS_JS, "w", encoding="utf-8") as f:
-        f.write(header + "const SONGS = " + body + ";\n")
+        f.write(text)
+    stamp_page(hashlib.md5(text.encode("utf-8")).hexdigest()[:8])
+
+
+def stamp_page(version):
+    """Point music.html at js/songs.js?v=<hash of its content>. GitHub Pages lets
+    browsers cache files for 10 minutes, so without this a visitor can keep an old
+    songs.js (e.g. one with no mp3s yet) after we publish a new one."""
+    page = os.path.join(ROOT, "music.html")
+    html = open(page, encoding="utf-8").read()
+    new = re.sub(r'/js/songs\.js(\?v=[0-9a-f]+)?"', f'/js/songs.js?v={version}"', html)
+    if new != html:
+        open(page, "w", encoding="utf-8").write(new)
 
 
 def main():
