@@ -117,7 +117,7 @@ def download(url, dest):
 
 
 # Fields you hand-edit in songs.js that must survive a re-sync.
-MANUAL_FIELDS = ("blurb", "credit")
+MANUAL_FIELDS = ("blurb", "credit", "lyrics_custom")
 
 
 def load_existing():
@@ -236,7 +236,11 @@ def main():
         if kept.get("credit"):           # keep credit right after blurb
             entry["credit"] = kept["credit"]
         entry["description"] = s.get("description", "")   # auto from Suno each sync
-        entry["lyrics"] = s["lyrics"]
+        # lyrics_custom (manual, preserved) replaces the lyrics Suno stores,
+        # e.g. for standard spelling and only [Verse]/[Chorus] tags.
+        if kept.get("lyrics_custom"):
+            entry["lyrics_custom"] = kept["lyrics_custom"]
+        entry["lyrics"] = kept.get("lyrics_custom") or s["lyrics"]
         entry["id"] = s["id"]
         out.append(entry)
 
